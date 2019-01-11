@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LaserPointer : MonoBehaviour {
-      public Material[] materials;
-      int index = 0;
-      Material m_OrignalMaterial;
+
     // Use this for initialization
     void Start () {
         // 1
         laser = Instantiate(laserPrefab);
         // 2
         laserTransform = laser.transform;
-        m_OrignalMaterial = GetComponent<MeshRenderer>().material;
-        materials = GetComponent<MeshRenderer>().materials;
+
     }
     private SteamVR_TrackedObject trackedObj;
     // 1
@@ -24,9 +21,12 @@ public class LaserPointer : MonoBehaviour {
     private Transform laserTransform;
     // 4
     private Vector3 hitPoint;
+    public float increment= 0.01f;
+    float i = 0f;
+    
     
 
-    private SteamVR_Controller.Device Controller
+    public SteamVR_Controller.Device Controller
     {
         get { return SteamVR_Controller.Input((int)trackedObj.index); }
     }
@@ -51,6 +51,7 @@ public class LaserPointer : MonoBehaviour {
  
 
     void Update () {
+       
         // 1
         if (Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
@@ -62,17 +63,24 @@ public class LaserPointer : MonoBehaviour {
                 hitPoint = hit.point;
 
                 ShowLaser(hit);
-
-                hit.collider.GetComponent<Renderer>().material.color = Color.red;
-
-                Debug.Log(hitPoint);
-
-                GetComponent<MeshRenderer>().sharedMaterial = materials[index + 1];
-                if (hit.collider.GetComponent<Farm>() != null)
+                Vector2 touchpad = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
+                Shader.SetGlobalFloat("_Transparency", increment);
+                if (touchpad.x > 0.7f)
                 {
-                    hit.collider.GetComponent<Farms>().materialChange(hit.collider.GetComponent<Renderer>());
-                   // Instantiate(shotHitParticle, hit.point, hit.collider.transform.rotation);
+                    i = increment + 0.01f;
+                    increment = i;
+                    print("Moving Right");
+                    Debug.Log("inside" + increment);
+                    Shader.SetGlobalFloat("_Transparency", increment);
                 }
+                else if (touchpad.x < -0.7f)
+                {
+                    i = increment - 0.01f;
+                    increment = i;
+                    print("Moving left");
+                    Shader.SetGlobalFloat("_Transparency", increment);
+                }
+                hit.collider.GetComponent<Farms>().materialChange(hit.collider.GetComponent<Renderer>());
             }
         }
         else // 3
