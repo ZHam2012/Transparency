@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Farms : MonoBehaviour {
+    public Material[] material;
+    public Renderer rend;
+    public GameObject parent;
+   
+    // Use this for initialization
+    void Start () {
+        rend = GetComponent<Renderer>();
+        rend.enabled = true;
+        //parent.transform.GetChild(0).gameObject.SetActive(false);
+        Debug.Log("Child Objects: " + CountChildren(transform));
+    }
+    int CountChildren(Transform a)
+    {
+        int childCount = 0;
+        foreach (Transform b in a)
+        {
+            Debug.Log("Child: " + b);
+            childCount++;
+            childCount += CountChildren(b);
+        }
+        return childCount;
+    }
+    // Update is called once per frame
+    public void materialChange(Renderer render) {
+        foreach (Transform child in parent.transform)
+        {
+            child.gameObject.GetComponent<Renderer>().material = material[1];
+        }
+
+    }
+}
