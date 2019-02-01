@@ -4,7 +4,7 @@ Shader "Unlit/Transparencytest"
     {
         _MainTex ("Albedo Texture",Color) = (1,1,1)
       
-        _Transparency("Transparency", Range(0.0,0.8)) = 0.25
+       // _Transparency ("Transparency", Range(0.0,0.8)) = 0.25
     }
     SubShader
     {
